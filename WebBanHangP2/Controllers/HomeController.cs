@@ -22,6 +22,8 @@ namespace WebBanHangP2.Controllers
 
         public IActionResult Index()
         {
+
+            //Test
             var product = from p in _dbConnect.ProductEntities
                           join c in _dbConnect.CategoryEntities
                           on p.idCategory equals c.idCategory
