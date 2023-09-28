@@ -1,0 +1,120 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Sign Up Form by Colorlib</title>
+
+    <!-- Font Icon -->
+    <link rel="stylesheet" href="~/singup/fonts/material-icon/css/material-design-iconic-font.min.css">
+
+    <!-- Main css -->
+    <link rel="stylesheet" href="~/singup/css/style.css">
+</head>
+<body>
+
+    <div class="main">
+
+
+        <!-- Sign up form -->
+        <section class="signup">
+            <div class="container">
+                <div class="signup-content">
+                    <div class="signup-form">
+                        <h2 class="form-title">Sign up</h2>
+                        <form role="form" method="POST" action="/Admin/SingUp/Register" class="register-form" id="register-form">
+                            <span id ="idUser">
+                                </span>
+                            <div class="form-group">
+                                <label for="name"><i class="zmdi zmdi-account material-icons-name"></i></label>
+                                <input type="text" name="name" id="nameUser" placeholder="Your Name" />
+                            </div>
+                            <div class="form-group">
+                                <label for="email"><i class="zmdi zmdi-account material-icons-name"></i></label>
+                                <input type="text" name="email" id="accountUser" placeholder="Your Name Account" />
+                            </div>
+                            <div class="form-group">
+                                <label for="pass"><i class="zmdi zmdi-lock"></i></label>
+                                <input type="password" name="pass" id="passwordUser" placeholder="Password" />
+                            </div>
+                            <div class="form-group">
+                                <label for="re-pass"><i class="zmdi zmdi-lock-outline"></i></label>
+                                <input type="password" name="re_pass" id="passwordUserCheck" placeholder="Repeat your password" />
+                            </div>
+                            <div class="form-group">
+                                <input type="checkbox" name="agree-term" id="agree-term" class="agree-term" />
+                                <label for="agree-term" class="label-agree-term"><span><span></span></span>I agree all statements in  <a href="#" class="term-service">Terms of service</a></label>
+                            </div>
+                            <div class="form-group form-button">
+                                <button type="button" name="signup" id="signup" class="form-submit" style="border:none"  onclick="addNewUser()">
+                                    Đăng Ký
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="signup-image">
+                        <figure><img src="~/singup/images/signup-image.jpg" alt="sing up image"></figure>
+                        <a href="/Admin/SingUp" class="signup-image-link">I am already member</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- JS -->
+    <script src="~/singup/vendor/jquery/jquery.min.js"></script>
+    <script src="~/singup/js/main.js"></script>
+
+        <script>
+
+
+            function addNewUser() {
+
+                console.log()
+                let obj = {
+                    nameUser: $('#nameUser').val(),
+                    accountUser: $('#accountUser').val(),
+                    passwordUser: $('#passwordUser').val(),
+                    passwordUserCheck: $('#passwordUserCheck').val(),
+                    //imgProduct: $('#imgProduct').val()
+                    //IdCategory: $('#IdCategory').val()
+
+                }
+                $.ajax({
+                    url: "/admin/SingUp/NewUser",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(obj),
+                    beforeSend: function () {
+                        console.log("Before");
+                        console.log(obj);
+                    },
+                    success: function (res) {
+
+                        if (res == 2) {
+                            alert("Tên không được để trống !");
+                        }
+                        if (res == 3) {
+                            alert("Password không giống nhau");
+                        }
+                        if (res == 1) {
+                            alert("Thêm mới thành công !");
+                        window.location.href = '/Admin/SingUp';
+                        } else {
+                            alert("Tạo thất bại...");
+                        }
+                    },
+                    error: function (error) {
+                        console.log("Lỗi");
+                        console.log(error);
+                        alert("Tạo thất bại...");
+                    }
+                })
+            }
+
+        </script>
+    
+</body><!-- This templates was made by Colorlib (https://colorlib.com) -->
+</html>

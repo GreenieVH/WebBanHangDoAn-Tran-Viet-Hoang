@@ -1,0 +1,168 @@
+﻿@using WebBanHangP2.Models;
+@model ModleAllClass
+
+@{
+    Layout = "LayoutNull";
+    
+}
+
+<title>User Edit</title>
+<div class="container">
+    <section class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Edit User</h3>
+        </div>
+        <div class="panel-body">
+            <form role="form" method="POST" action="/Admin/Contact/EditProfileChange">
+                <div class="form-group">
+                    <label for="name" class="col-sm-3 control-label">ID</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" value="@Model.Users[0].idUser" readonly id="idUser" placeholder="ID">
+                    </div>
+                </div> <!-- form-group // -->
+                <div class="form-group">
+                    <label for="name" class="col-sm-3 control-label">User name</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" value="@Model.Users[0].nameUser" id="nameUser" placeholder="User name">
+                    </div>
+                </div> <!-- form-group // -->
+                <div class="form-group">
+                    <label for="name" class="col-sm-3 control-label">Account</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" value="@Model.Users[0].accountUser" readonly id="accountUser" placeholder="Account">
+                    </div>
+                </div> <!-- form-group // -->
+                <div class="form-group">
+                    <label for="name" class="col-sm-3 control-label">Password</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" value="@Model.Users[0].passwordUser" id="passwordUser" placeholder="Password">
+                    </div>
+                </div> <!-- form-group // -->
+                <div class="form-group">
+                    <label for="name" class="col-sm-3 control-label">Email</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" value="@Model.Users[0].emailUser" id="emailUser" placeholder="Email">
+                    </div>
+                </div> <!-- form-group // -->
+                <div class="form-group">
+                    <label for="name" class="col-sm-3 control-label">Address</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" value="@Model.Users[0].addressUser" id="addressUser" placeholder="Address">
+                    </div>
+                </div> <!-- form-group // -->
+                <div class="form-group">
+                    <label for="name" class="col-sm-3 control-label">Phone Number</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" value="@Model.Users[0].phoneUser" id="phoneUser" placeholder="Phone Number">
+                    </div>
+                </div> <!-- form-group // -->
+                <div class="form-group">
+                    <label for="name" class="col-sm-3 control-label">Story</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" value="@Model.Users[0].storyUser" id="storyUser" placeholder="Story">
+                    </div>
+                </div> <!-- form-group // -->
+                <div class="form-group">
+                    <label for="name" class="col-sm-3 control-label">Image Product</label>
+                    <div class="form-group">
+                        <label for="image">Chọn file</label>
+                        <input type="file" id="imageUpload">
+                        <input type="text" id="imgUser" readonly />
+                    </div>
+                    <div id="imageNewFay">
+                        <img style="width: 60px" src="~/imageUser/@Model.Users[0].imgUser" />
+                    </div>
+                </div> <!-- form-group // -->
+                <hr>
+                <div class="form-group">
+                    <div class="col-sm-offset-3 col-sm-9">
+                        <button type="button" onclick="change()" class="btn btn-primary">Submit</button>
+                    </div>
+                </div> <!-- form-group // -->
+            </form>
+        </div><!-- panel-body // -->
+    </section><!-- panel// -->
+</div> <!-- container// -->
+@section AdminScrips
+    {
+    <script>
+        $('#imageUpload').on('change', function () {
+            debugger
+            var files = $(this).prop('files');
+            var formData = new FormData();
+            formData.append("imageUpload", files[0]);
+
+            $.ajax({
+                type: 'POST',
+                url: '/admin/home/UloadImageUser',
+                data: formData,
+                contentType: false,
+                processData: false,
+                beforeSend: function () {
+
+                },
+                success: function (res) {
+                    console.log(res.filePath);
+                    $('input[id="imgUser"]').val(res.fileName);
+                    let srcImage = res.fileName;
+                    $('#imageNewFay').html('');
+                    let html = `
+                    <img style="width: 60px" src="/imageUser/${srcImage}" />
+                                    `;
+                    $('#imageNewFay').append(html);
+                    console.log(res);
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+            })
+        });
+
+        function change() {
+
+            console.log()
+            let obj = {
+
+                nameUser: $('#nameUser').val(),
+                idUser: $('#idUser').val(),
+                passwordUser: $('#passwordUser').val(),
+                accountUser: $('#accountUser').val(),
+                emailUser: $('#emailUser').val(),
+                addressUser: $('#addressUser').val(),
+                phoneUser: $('#phoneUser').val(),
+                storyUser: $('#storyUser').val(),
+                imgUser: $('#imgUser').val()
+            }
+            $.ajax({
+                url: "/admin/Contact/EditProfileChange",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(obj),
+                beforeSend: function () {
+                    console.log("Before");
+                    console.log(obj);
+                },
+                success: function (res) {
+                    console.log(res)
+                    if (res == 2) {
+                        alert("Tên không được để trống !");
+                    }
+                    if (res == 3) {
+                        alert("Tên này đã bị trùng !");
+                    }
+                    if (res == 1) {
+                        alert("Chỉnh sửa thành công !");
+                    } else {
+                        alert("Chỉnh sửa thất bại...");
+                    }
+                },
+                error: function (error) {
+                    console.log("Lỗi");
+                    console.log(error);
+                    alert("Chỉnh sửa thất bại...");
+                }
+            })
+        }
+
+    </script>
+}

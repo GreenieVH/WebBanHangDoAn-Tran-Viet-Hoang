@@ -1,0 +1,142 @@
+﻿@using WebBanHangP2.Models;
+@model ModleAllClass
+
+<link href="~/fontend/css/shop.css?version=@DateTime.Now.Ticks" rel="stylesheet" type="text/css"/>
+
+<div style="position:relative">
+    <a style="display:flex;justify-content:center;margin:20px 0;"><img src="~/fontend/img/banner-shop.jpg" /></a>
+    <h2 style="position:absolute;font-size:100px;color:white;font-weight:700;top:50%;transform:translateY(-50%);left:300px;">Shop</h2>
+</div>
+
+
+<form action="/Home/Shop" method="get" id="submitForm">
+<div class="main-menu-shop">
+    <div id="menu-shop">
+            <select class="menu" id="menu2" name="company">
+                    <option value="0">Sắp xếp theo hãng</option>
+                    <option value="1">Nokia</option>
+                    <option value="2">Apple</option>
+                    <option value="3">Oppo</option>
+                    <option value="4">Samsung</option>
+            </select>
+
+            <select class="menu" id="menu2" name="newOld">
+                    <option value="0">Sắp xếp theo hàng mới</option>
+                    <option value="1">New</option>
+                    <option value="2">Old</option>
+            </select>
+
+            <select class="menu" id="menu2" name="costSale">
+                <option value="0">Sắp xếp theo giá</option>
+                <option value="1">Cost</option>
+                <option value="2">sale</option>
+            </select>
+     
+
+    <!-- Another variation with a button -->
+        <div class="input-group" style="width:300px;display:flex;gap:2px;align-items:center">
+                <input type="search" class="form-control" style="width:250px" placeholder="Search this blog" name="seachName" aria-label="Search" aria-describedby="search-addon">
+                <button class="btn btn-secondary" type="submit">
+                    <i class="fa fa-search" style="color:white"></i>
+                </button>
+        </div>
+    </div>
+</div>
+
+    <div class="single-product-area">
+        <div class="zigzag-bottom"></div>
+        <div class="container">
+            <div class="row">
+                @{
+                    int count = (Model.PageNumber * Model.PageSize - Model.PageSize) + 1;
+                }
+                @foreach (var item in Model.Product)
+                {
+                    <div class="col-md-3 col-sm-6">
+                        <div class="single-shop-product">
+                            <div class="single-shop-product-top">
+                                <div class="product-upper" href="">
+                                    <a href="/Home/ProductDetail?id=@item.idProduct">
+                                    <img src="/fontend/img/@item.imgProduct" alt="">
+                                    </a>
+                                </div>
+                                <h2><a href="/Home/ProductDetail?id=@item.idProduct">@item.nameProduct</a></h2>
+                                <div class="product-carousel-price">
+                                    <ins>$@item.priceSaleProduct</ins> <del>$@item.priceProduct</del>
+                                </div>
+                            </div>
+                            <div class="product-option-shop">
+                                <a class="add_to_cart_button" data-quantity="1" data-product_sku="" data-product_id="70" rel="nofollow" href="/Home/AddCart?id=@item.idProduct"><i class="fa fa-plus-circle" aria-hidden="true" style="margin-right:10px"></i>Add to cart</a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="product-pagination text-center">
+                        <nav>
+                            <ul class="pagination">
+                                @{
+                                    if (Model.PageSize > 1)
+                                    {
+                                        <li>
+                                            <a href="#" aria-label="Previous" onclick="clickPage(@Model.PageNumber - 1)">
+                                                <span aria-hidden="true">&laquo;</span>
+                                            </a>
+                                        </li>
+                                    }
+
+                                    for (int i = 1; i <= Model.PageCount; i++)
+                                    {
+                                        if (i == Model.PageNumber)
+                                        {
+                                            <li class="page-item active" onclick="clickPage(@i)">
+                                                <a class="page-link" href="#">@i</a>
+                                            </li>
+                                        }
+                                        else
+                                        {
+                                            <li class="page-item" onclick="clickPage(@i)">
+                                                <a class="page-link" href="#">@i</a>
+                                            </li>
+                                        }
+                                    }
+
+                                    if (Model.PageNumber < Model.PageCount)
+                                    {
+                                        <li onclick="clickPage(@Model.PageNumber + 1)">
+                                            <a href="#" aria-label="Next" >
+                                                <span aria-hidden="true">&raquo;</span>
+                                            </a>
+                                        </li>
+                                    }
+
+                                }
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <input style="position:absolute" type="number" name="pageNumber" value="@Model.PageNumber" hidden="hidden" />
+</form>
+@section Scrips{
+
+    <script>
+        $('#pageSize').val(@Model.PageSize)
+        function clickPage(pageNumber) {
+            $("input[name='pageNumber']").val(pageNumber);
+            $("#submitForm").submit();
+        }
+
+        $("select[name='pageSize']").change(function () {
+            $("input[name='pageNumber']").val(1);
+            $("#submitForm").submit();
+        })
+
+    </script>
+
+}

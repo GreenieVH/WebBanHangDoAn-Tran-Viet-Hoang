@@ -1,0 +1,115 @@
+﻿@using WebBanHangP2.Models;
+@model ModleAllClass
+
+@{
+    Layout = "LayoutAdmin";
+}
+<title>Change User</title>
+<div class="container">
+    <section class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Edit User</h3>
+        </div>
+        <div class="panel-body">
+            <form role="form" method="POST" action="/Admin/Home/EditChangeUser">
+                <div class="form-group">
+                    <label for="name" class="col-sm-3 control-label">ID</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" value="@ViewBag.idUserEdit" readonly id="idUser" placeholder="ID">
+                    </div>
+                </div> <!-- form-group // -->
+                <div class="form-group">
+                    <label for="name" class="col-sm-3 control-label">User name</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" value="@Model.Users[0].nameUser" id="nameUser" placeholder="User name">
+                    </div>
+                </div> <!-- form-group // -->
+                <div class="form-group">
+                    <label for="name" class="col-sm-3 control-label">Account</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" value="@Model.Users[0].accountUser" readonly id="accountUser" placeholder="Account">
+                    </div>
+                </div> <!-- form-group // -->
+                <div class="form-group">
+                    <label for="name" class="col-sm-3 control-label">Password</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" value="@Model.Users[0].passwordUser" id="passwordUser" placeholder="Password">
+                    </div>
+                </div> <!-- form-group // -->
+                <div class="form-group">
+                    <label for="name" class="col-sm-3 control-label">Is admin</label>
+                    <select class="form-control" id="isAdmin">
+                        <option value="">Lua chon </option>
+
+                        <option value="0">False </option>
+                        <option value="1">True </option>
+                        
+                    </select>
+                </div> <!-- form-group // -->
+                <div class="form-group">
+                    <label for="name" class="col-sm-3 control-label">Is ban</label>
+                    <select class="form-control" id="isBan">
+                        <option value="">Lua chon </option>
+
+                        <option value="0">False </option>
+                        <option value="1">True </option>
+
+                    </select>
+                </div> <!-- form-group // -->
+
+                <hr>
+                <div class="form-group">
+                    <div class="col-sm-offset-3 col-sm-9">
+                        <button type="button" onclick="change()" class="btn btn-primary">Submit</button>
+                    </div>
+                </div> <!-- form-group // -->
+            </form>
+        </div><!-- panel-body // -->
+    </section><!-- panel// -->
+</div> <!-- container// -->
+@section AdminScrips
+    {
+    <script>
+
+        function change() {
+
+            console.log()
+            let obj = {
+
+                nameUser: $('#nameUser').val(),
+                idUser: $('#idUser').val(),
+                passwordUser: $('#passwordUser').val(),
+                isAdminString: $('#isAdmin').val(),
+                isBanString: $('#isBan').val(),
+            }
+            $.ajax({
+                url: "/admin/Home/EditChangeUser",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(obj),
+                beforeSend: function () {
+                    console.log("Before");
+                    console.log(obj);
+                },
+                success: function (res) {
+
+                    if (res == 2) {
+                        alert("Tên không được để trống !");
+                    }
+                    if (res == 3) {
+                        alert("Tên này đã bị trùng !");
+                    }
+                    if (res == 1) {
+                        alert("Chỉnh sửa thành công !");
+                    }
+                },
+                error: function (error) {
+                    console.log("Lỗi");
+                    console.log(error);
+                    alert("Chỉnh sửa thất bại...");
+                }
+            })
+        }
+
+    </script>
+}

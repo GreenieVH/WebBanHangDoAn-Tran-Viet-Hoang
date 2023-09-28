@@ -1,0 +1,164 @@
+﻿@using WebBanHangP2.Models;
+@model ModleAllClass
+
+@{
+    Layout = "LayoutAdmin";
+}
+
+<title>New User</title>
+<div class="container">
+    <section class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">New Product</h3>
+        </div>
+        <div class="panel-body">
+            <form role="form" method="POST" action="/Admin/Home/Product">
+
+                <div class="form-group">
+                    <label for="name" class="col-sm-3 control-label">Name Product</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="nameProduct" placeholder="NameProduct">
+                    </div>
+                </div> <!-- form-group // -->
+                <div class="form-group">
+                    <label for="name" class="col-sm-3 control-label">Price</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="priceProduct" placeholder="Price">
+                    </div>
+                </div> <!-- form-group // -->
+                <div class="form-group">
+                    <label for="name" class="col-sm-3 control-label">Price Sale</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="priceSaleProduct" placeholder="PriceSale">
+                    </div>
+                </div> <!-- form-group // -->
+
+                <div class="form-group">
+                    <label for="IdCategory">Category</label>
+                    <select class="form-control" id="idCategory">
+                        <option value="0">Lựa chọn</option>
+                        @foreach (var item in Model.Category)
+                        {
+                            <option value="@item.idCategory">@item.nameCategory</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="IdArtists">System</label>
+                    <select class="form-control" id="idSystem">
+                        <option value="0">Lựa chọn</option>
+                        @foreach (var item in Model.System)
+                        {
+                            <option value="@item.idSystem">@item.nameSystemn</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="name" class="col-sm-3 control-label">Image Product</label>
+                    <div class="form-group">
+                        <label for="image">Chọn file</label>
+                        <input type="file" id="imageUpload">
+                        <input type="text" id="imgProduct" readonly />
+                    </div>
+                    <div id="imageNewFay">
+                        <img style="width: 60px" src="~/fontend/img/brand1.png" />
+                    </div>
+                </div> <!-- form-group // -->
+
+                
+                <hr>
+                <div class="form-group">
+                    <div class="col-sm-offset-3 col-sm-9">
+                        <button type="button" onclick="addNewProduct()" class="btn btn-primary">Thêm mới</button>
+                    </div>
+                </div> <!-- form-group // -->
+            </form>
+        </div><!-- panel-body // -->
+    </section><!-- panel// -->
+
+</div> <!-- container// -->
+@section AdminScrips
+    {
+    <script>
+        $('#imageUpload').on('change', function () {
+            debugger
+            var files = $(this).prop('files');
+            var formData = new FormData();
+            formData.append("imageUpload", files[0]);
+
+            $.ajax({
+                type: 'POST',
+                url: '/admin/home/UploadImageProduct',
+                data: formData,
+                contentType: false,
+                processData: false,
+                beforeSend: function () {
+
+                },
+                success: function (res) {
+                    console.log(res.filePath);
+                    $('input[id="imgProduct"]').val(res.fileName);
+                    let srcImage = res.fileName;
+                    $('#imageNewFay').html('');
+                    let html = `
+                                         <img style="width: 60px" src="/fontend/img/${srcImage}" />
+                            `;
+                    $('#imageNewFay').append(html);
+                    console.log(res);
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+            })
+        });
+
+
+
+        function addNewProduct() {
+
+            console.log()
+            let obj = {
+                nameProduct: $('#nameProduct').val(),
+                priceProduct: $('#priceProduct').val(),
+                priceSaleProduct: $('#priceSaleProduct').val(),
+                idCategory: $('#idCategory').val(),
+                idSystem: $('#idSystem').val(),
+                imgProduct: $('#imgProduct').val()
+                //IdCategory: $('#IdCategory').val()
+
+            }
+            $.ajax({
+                url: "/admin/home/ProductNew",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(obj),
+                beforeSend: function () {
+                    console.log("Before");
+                    console.log(obj);
+                },
+                success: function (res) {
+
+                    if (res == 2) {
+                        alert("Tên không được để trống !");
+                    }
+                    if (res == 3) {
+                        alert("Tên này đã bị trùng !");
+                    }
+                    if (res == 1) {
+                        alert("Thêm mới thành công !");
+                    } else {
+                        alert("Thêm mới thất bại...");
+                    }
+                },
+                error: function (error) {
+                    console.log("Lỗi");
+                    console.log(error);
+                    alert("Thêm mới thất bại...");
+                }
+            })
+        }
+
+    </script>
+}
